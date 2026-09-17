@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Filme {
+  id         Int              @id @default(autoincrement())
+  titulo     String
+  duracao    Int
+  categorias FilmeCategoria[]
+}
+
+model Categoria {
+  id     Int              @id @default(autoincrement())
+  nome   String           @unique
+  filmes FilmeCategoria[]
+}
+
+model FilmeCategoria {
+  id          Int       @id @default(autoincrement())
+  filmeId     Int
+  categoriaId Int
+  filme       Filme     @relation(fields: [filmeId], references: [id], onDelete: Cascade)
+  categoria   Categoria @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
+
+  @@unique([filmeId, categoriaId])
+  @@index([filmeId])
+  @@index([categoriaId])
+}
